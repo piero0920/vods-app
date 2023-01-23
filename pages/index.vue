@@ -26,29 +26,39 @@
   
   
   </template>
-  <script setup>
-      const hovered = ref(null)
-      const page = ref(1)
-      async function loadData(page){
-          return await useAsyncGql('GetVods', { limit: 12, page: page})
-      }
-      const { data } = await loadData(page.value)
-  
-      async function loadPage(newPage){
-        if(newPage>=1 || newPage <= data.value.vodsQuery.pages){
-          const { data:nextData } = await loadData(newPage)
-          data.value = nextData.value
-        }
-      }
-      function toHMS(sec){
-          return new Date(sec * 1000).toISOString().substring(11, 19)
-      }
-      function toDate(id){
-        return `${id.substring(0,4)}/${id.substring(4,6)}/${id.substring(6,8)}`
-      }
-      onMounted(async()=>{
-      })
-  </script>
+<script setup>
+  useHead({
+    title: "VODs",
+    meta: [
+      { name: 'description', content: 'Temporary display of VODs'},
+      { property: 'og:type', content: 'website' },
+      { property: 'og:image', content: '/favicon.ico' },
+      { property: 'og:title', content: 'VODs' },
+      { property: 'og:description', content: 'Temporary display of VODs' },
+    ]
+  })
+  const hovered = ref(null)
+  const page = ref(1)
+  async function loadData(page){
+      return await useAsyncGql('GetVods', { limit: 12, page: page})
+  }
+  const { data } = await loadData(page.value)
+
+  async function loadPage(newPage){
+    if(newPage>=1 || newPage <= data.value.vodsQuery.pages){
+      const { data:nextData } = await loadData(newPage)
+      data.value = nextData.value
+    }
+  }
+  function toHMS(sec){
+      return new Date(sec * 1000).toISOString().substring(11, 19)
+  }
+  function toDate(id){
+    return `${id.substring(0,4)}/${id.substring(4,6)}/${id.substring(6,8)}`
+  }
+  onMounted(async()=>{
+  })
+</script>
   <style>
   html, body {
     font-family:Roboto, Arial, sans-serif;

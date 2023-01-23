@@ -20,6 +20,22 @@
     let vodSources = ref()
     let chatOptions = ref()
     let chatSources = ref()
+    let description = ref()
+    if (data.value.vod !== null){
+        description.value = data.value.vod.title
+    } else {
+        description.value = 'NOT FOUND'
+    }
+    useHead({
+        title: id,
+        meta: [
+            { name: 'description', content: description.value },
+            { property: 'og:type', content: 'website' },
+            { property: 'og:image', content: '/favicon.ico' },
+            { property: 'og:title', content: id },
+            { property: 'og:description', content: description.value },
+        ]
+    })
     if(data.value.vod !== null){
         vodOptions = {
         controls: ["rewind", "play-large", "play", "fast-forward", "progress", "current-time","duration", "mute", "volume", "settings", "download", "pip", "airplay", "fullscreen" ],
