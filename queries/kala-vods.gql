@@ -1,0 +1,46 @@
+query GetEntries($limit: Int, $page: Int){
+  entriesQuery(limit: $limit, page: $page){
+    entries{
+      _id
+      title
+      vods {
+        thumbnailURL
+        previewURL
+      }
+    }
+    total
+    page
+    count
+  }
+  
+}
+
+query GetVods($limit: Int, $page: Int){
+  vodsQuery(limit: $limit, page: $page){
+    vods{
+      _id
+      title
+      duration
+      thumbnailURL
+      previewURL
+    }
+    total
+    page
+    pages
+    count
+  }
+}
+
+
+query simpleVOD($id: ID!){
+  vod(id: $id){
+    title
+    thumbnailURL
+    vodURL
+    download
+    chat {
+      chatUrl
+      download
+    }
+  }
+}
