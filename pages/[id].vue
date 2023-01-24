@@ -16,18 +16,20 @@
 <script setup>
     const { id } = useRoute().params
     const { data, error, pending } = await useAsyncGql('simpleVOD', {id: id})
-    let vodOptions, vodSources, chatOptions, chatSources, description = ref()
+    let vodOptions, vodSources, chatOptions, chatSources, description, thumb = ref()
     if (data.value.vod !== null){
         description.value = data.value.vod.title
+        thumb.value = data.value.vod.thumbnailURL
     } else {
         description.value = 'NOT FOUND'
+        thumb.value = '/favicon.ico'
     }
     useHead({
         title: id,
         meta: [
             { name: 'description', content: description.value },
             { property: 'og:type', content: 'website' },
-            { property: 'og:image', content: '/favicon.ico' },
+            { property: 'og:image', content: thumb.value },
             { property: 'og:title', content: id },
             { property: 'og:description', content: description.value },
         ]
