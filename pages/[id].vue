@@ -16,7 +16,12 @@
 <script setup>
     const { id } = useRoute().params
     const { data, error, pending } = await useAsyncGql('simpleVOD', {id: id})
-    let vodOptions, vodSources, chatOptions, chatSources, description, thumb = ref()
+    let vodOptions = ref()
+    let vodSources = ref()
+    let chatOptions = ref()
+    let chatSources = ref() 
+    let description = ref()
+    let thumb = ref()
     if (data.value.vod !== null){
         description.value = data.value.vod.title
         thumb.value = data.value.vod.thumbnailURL
