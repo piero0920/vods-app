@@ -16,11 +16,7 @@
 <script setup>
     const { id } = useRoute().params
     const { data, error, pending } = await useAsyncGql('simpleVOD', {id: id})
-    let vodOptions = ref()
-    let vodSources = ref()
-    let chatOptions = ref()
-    let chatSources = ref()
-    let description = ref()
+    let vodOptions, vodSources, chatOptions, chatSources, description = ref()
     if (data.value.vod !== null){
         description.value = data.value.vod.title
     } else {
@@ -97,22 +93,35 @@
     
             const chatPlayer = new Plyr.default("#chat", chatOptions);
             chatPlayer.source = chatSources;
-    
-            vodPlayer.on('playing', ()=>{
-                chatPlayer.play()
-            });
-    
+            
+            vodPlayer.once('loadedmetadata', ()=>{
+                if ('mediaSession' in navigator) {
+                    const newMeta = new window.MediaMetadata({
+                        title: data.value.vod.title,
+                        artist: id,
+                        artwork: [ { src: data.value.vod.thumbnailURL, type: 'image/png' }]
+                    });
+                    navigator.mediaSession.metadata = newMeta
+                    navigator.mediaSession.setActionHandler('seekforward', ()=>{
+                        vodPlayer.forward(10)
+                    })
+                    navigator.mediaSession.setActionHandler('seekbackward', ()=>{
+                        vodPlayer.rewind(10)
+                    })
+                }
+            })
+            vodPlayer.on('timeupdate', ()=>{
+                if(~~vodPlayer.currentTime % 10 == 0){
+                    chatPlayer.currentTime = vodPlayer.currentTime
+                }
+            })
+            vodPlayer.on('playing', ()=>{ chatPlayer.play() });    
             vodPlayer.on('pause',()=>{
                 chatPlayer.pause()
-            });
-    
-            vodPlayer.on('seeked', ()=>{
                 chatPlayer.currentTime = vodPlayer.currentTime
-            })
-    
-            vodPlayer.on('enterfullscreen', ()=>{
-                chatPlayer.pause()
-            })
+            });
+            vodPlayer.on('seeked', ()=>{ chatPlayer.currentTime = vodPlayer.currentTime })
+            vodPlayer.on('enterfullscreen', ()=>{ chatPlayer.pause()})
             vodPlayer.on('exitfullscreen',()=>{
                 chatPlayer.play()
                 chatPlayer.currentTime = vodPlayer.currentTime
