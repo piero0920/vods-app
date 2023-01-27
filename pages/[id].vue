@@ -40,67 +40,66 @@
         ]
     })
     if(data.value.vod !== null){
-        vodOptions = {
-        controls: ["rewind", "play-large", "play", "fast-forward", "progress", "current-time","duration", "mute", "volume", "settings", "download", "pip", "airplay", "fullscreen" ],
-        settings: ["captions", "quality", "speed", "loop"],
-        autoplay: false,
-        volume: 0.5,
-        keyboard: { focused: true, global: true },
-        speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] },
-        displayDuration: true,
-        disableContextMenu: true,
-        toggleInvert: true,
-        fullscreen: { enabled: true, fallback: true, iosNative: false, container: null },
-        ratio: '16:9',
-        storage: { enabled: true, key: id },
-        urls: { download: data.value.vod.download},
-        markers: {},
-    };
-    vodSources = {
-        type: "video",
-        title: data.value.vod.title,
-        sources: [{
-            src: data.value.vod.vodURL,
-            type: "video/mp4",
-            size: 1080
-        }],
-        poster: data.value.vod.thumbnailURL,
-    };
-    chatOptions = {
-        controls: ["current-time","duration","download"],
-        settings: [],
-        autoplay: false,
-        volume: 0,
-        keyboard: { focused: true, global: false },
-        speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] },
-        displayDuration: true,
-        disableContextMenu: true,
-        toggleInvert: true,
-        fullscreen: { enabled: false, fallback: false, iosNative: false, container: null },
-        ratio: '9:16',
-        urls: { download: data.value.vod.chat.download},
-        clickToPlay: false,
-    };
-    chatSources = {
-        type: "video",
-        title: data.value.vod.title,
-        sources: [{
-            src: data.value.vod.chat.chatUrl,
-            type: "video/mp4",
-            size: 1080
-        }],
-        poster: '',
-    };
+        vodOptions.value = {
+            controls: ["rewind", "play-large", "play", "fast-forward", "progress", "current-time","duration", "mute", "volume", "settings", "download", "pip", "airplay", "fullscreen" ],
+            settings: ["captions", "quality", "speed", "loop"],
+            autoplay: false,
+            volume: 0.5,
+            keyboard: { focused: true, global: true },
+            speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] },
+            displayDuration: true,
+            disableContextMenu: true,
+            toggleInvert: true,
+            fullscreen: { enabled: true, fallback: true, iosNative: false, container: null },
+            ratio: '16:9',
+            storage: { enabled: true, key: id },
+            urls: { download: data.value.vod.download},
+            markers: {},
+        };
+        vodSources.value = {
+            type: "video",
+            title: data.value.vod.title,
+            sources: [{
+                src: data.value.vod.vodURL,
+                type: "video/mp4",
+                size: 1080
+            }],
+            poster: data.value.vod.thumbnailURL,
+        };
+        chatOptions.value = {
+            controls: ["current-time","duration","download"],
+            settings: [],
+            autoplay: false,
+            volume: 0,
+            keyboard: { focused: true, global: false },
+            speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] },
+            displayDuration: true,
+            disableContextMenu: true,
+            toggleInvert: true,
+            fullscreen: { enabled: false, fallback: false, iosNative: false, container: null },
+            ratio: '9:16',
+            urls: { download: data.value.vod.chat === null ? '' : data.value.vod.chat.download},
+            clickToPlay: false,
+        };
+        chatSources.value = {
+            type: "video",
+            title: data.value.vod.title,
+            sources: [{
+                src: data.value.vod.chat === null ? 'https://cdn.kala-vods.com/chat/empty.mp4' : data.value.vod.chat.chatUrl,
+                type: "video/mp4",
+                size: 1080
+            }],
+            poster: '',
+        };
     }
     onMounted(async () => {
         if(data.value.vod !== null){
             const Plyr = await import("plyr");
-            const vodPlayer = new Plyr.default("#vod", vodOptions);
-            vodPlayer.source = vodSources;
-    
-            const chatPlayer = new Plyr.default("#chat", chatOptions);
-            chatPlayer.source = chatSources;
-            
+            const vodPlayer = new Plyr.default("#vod", vodOptions.value);
+            vodPlayer.source = vodSources.value;
+
+            const chatPlayer = new Plyr.default("#chat", chatOptions.value);
+            chatPlayer.source = chatSources.value;
             vodPlayer.once('loadedmetadata', ()=>{
                 if ('mediaSession' in navigator) {
                     const newMeta = new window.MediaMetadata({
