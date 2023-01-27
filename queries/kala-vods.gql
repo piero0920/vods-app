@@ -27,3 +27,19 @@ query simpleVOD($id: ID!){
     }
   }
 }
+
+query searchVODs($title: String!, $limit: Int, $page: Int){
+  searchVODs(title: $title, limit: $limit, page: $page){
+    vods{
+      _id
+      title
+      duration
+      thumbnailURL
+      previewURL
+    }
+    total
+    page
+    pages
+    count
+  }
+}
