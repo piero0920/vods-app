@@ -34,7 +34,7 @@
             <button @click="loadPage(data.page-1)" class="w-[100px] h-12 md:w-24 md:h-8 lg:w-24 lg:h-8 absolute left-0 drop-shadow-2xl rounded-full bg-purple-900 hover:bg-purple-800 hover:scale-110 active:bg-purple-700">Previous</button>
             <div class="flex text-center text-white w-full text-lg items-center justify-center space-x-5">
               <p>Page: {{ data.page }} / {{ data.pages }}</p>
-              <a class="w-10" href="https://github.com/piero0920/vods-app" target="_blank"><img src="/GitHub.png" alt="Github"></a>
+              <a class="w-10 hidden sm:hidden md:flex lg:flex" href="https://github.com/piero0920/vods-app" target="_blank"><img src="/GitHub.png" alt="Github"></a>
             </div>
             <button @click="loadPage(data.page+1)" class="w-[100px] h-12 md:w-24 md:h-8 lg:w-24 lg:h-8 absolute right-0 drop-shadow-2xl rounded-full bg-purple-900 hover:bg-purple-800 hover:scale-110 active:bg-purple-700">Next</button>
           </div>
