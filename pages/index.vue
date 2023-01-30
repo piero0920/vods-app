@@ -5,7 +5,7 @@
         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
-        <input type="text" v-model="text" id="default-search" class="block w-full p-4 pl-10 text-sm text-gray-900 border  rounded-lg bg-gray-50 focus:ring-slate-900  dark:bg-slate-900 dark:border-gray-900 dark:placeholder-gray-400 dark:text-white " placeholder="Search VODs title's ..." required>
+        <input type="text" v-model="text" id="default-search" class="block w-full p-4 pl-10 text-sm text-gray-900 border  rounded-lg bg-gray-50 focus:ring-slate-900  dark:bg-slate-900 dark:border-gray-900 dark:placeholder-gray-400 dark:text-white " placeholder="Search for VOD title or date eg: yyyymmdd" required>
         <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
           <p>{{ data.count }} / {{ data.total }}</p>
         </div>
@@ -59,10 +59,12 @@
   })
   const text = ref('')
   const hovered = ref(null)
+  const isSearch = ref(false)
+  const textSearched = ref('')
   const page = usePage()
-  async function loadData(page, title, isSearch){
-    if(isSearch === true){
-      const {data:searhed } =  await useAsyncGql('searchVODs', { title:  title, limit: 12, page: page})
+  async function loadData(page){
+    if(isSearch.value === true){
+      const {data:searhed } =  await useAsyncGql('searchVODs', { title:  textSearched.value, limit: 12, page: page})
       return searhed.value.searchVODs
     }else{
       const {data:vods } =  await useAsyncGql('GetVods', { limit: 12, page: page})
@@ -87,10 +89,13 @@
 
   watch(text, async(newText)=>{
     if(newText.length > 2){
-      const searchData = await loadData(1, newText, true)
+      isSearch.value = true
+      textSearched.value = newText
+      const searchData = await loadData(1)
       data.value = searchData
-    }else if(newText.length === 0){
-      const newData0 = await loadData(1)
+    }else if(newText.length == 0){
+      isSearch.value = false
+      const newData0 = await loadData(page.value)
       data.value = newData0
     }
   })
